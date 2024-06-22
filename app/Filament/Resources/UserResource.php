@@ -6,6 +6,7 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -27,10 +28,15 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                Section::make('Main data')
+                ->description('remember to put all information')
+                ->collapsible()
+                ->schema([
                 TextInput::make('name')->required(),
                 TextInput::make('email')->email(),
                 TextInput::make('password')->password(),
-            ]);
+                ]),
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table

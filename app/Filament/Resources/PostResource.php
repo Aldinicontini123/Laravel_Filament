@@ -10,7 +10,9 @@ use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -39,19 +41,33 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')->required(),
-                TextInput::make('slug')->required(),
-                ColorPicker::make('color')->required(),
+                Section::make('create the principal data')
+                ->description('remember to put everything in')
+                ->collapsible()
+                ->schema([
 
-                Select::make('category_id') 
-                ->label('category')
-                ->options(category::all()->pluck('name', 'id'))
-                ->searchable(),
+                    Group::make()->schema([
+                        TextInput::make('title')->required(),
+                        TextInput::make('slug')->required(),
+                    ]),
 
-                FileUpload::make('thumbnail')->disk('public')->directory('thumbnail'),
-                MarkdownEditor::make('content')->required(),
-                TagsInput::make('tags'),
-                Checkbox::make('published')->required(),
+                    Select::make('category_id') 
+                    ->label('category')
+                    ->options(category::all()->pluck('name', 'id'))
+                    ->searchable(),
+
+                    ColorPicker::make('color')->required(),
+
+                    MarkdownEditor::make('content')->required()->columnSpanFull(),
+                ])->columnSpan(1)->columns(2),
+
+                Section::make('the extra content')
+                ->schema([
+                    FileUpload::make('thumbnail')->disk('public')->directory('thumbnail'),
+                    TagsInput::make('tags'),
+                    Checkbox::make('published')->required(),
+                ])->columnSpan(1)->columns(1),
+                
             ]);
     }
 
